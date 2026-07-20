@@ -1,0 +1,17 @@
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface);
+  flex-shrink: 0;
+}
+
+.status {
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+
+.ready    { color: var(--color-success); }
+.notReady { color: var(--color-text-muted); }

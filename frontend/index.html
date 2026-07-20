@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="PDF Batch Gen — Generate personalized PDF certificates from a template and CSV list." />
+    <title>PDF Batch Gen</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+
+      /* ── Splash screen ─────────────────────────────────────── */
+      #splash {
+        position: fixed;
+        inset: 0;
+        background:
+          radial-gradient(circle at center, rgba(193, 22, 42, 0.22), transparent 35%),
+          linear-gradient(135deg, #050505 0%, #111111 45%, #000000 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        overflow: hidden;
+        transition: opacity 0.6s ease, visibility 0.6s ease;
+      }
+
+      #splash.hidden {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+
+      #splash::before {
+        content: "";
+        position: absolute;
+        width: 480px;
+        height: 480px;
+        background: rgba(193, 22, 42, 0.2);
+        border-radius: 50%;
+        filter: blur(100px);
+        animation: pulseGlow 2.5s ease-in-out infinite;
+      }
+
+      #splash::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+        background-size: 42px 42px;
+        mask-image: radial-gradient(circle at center, black, transparent 70%);
+        -webkit-mask-image: radial-gradient(circle at center, black, transparent 70%);
+      }
+
+      .splash-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        animation: contentEnter 1s ease forwards;
+      }
+
+      .mk-logo {
+        width: min(280px, 60vw);
+        height: auto;
+        filter: drop-shadow(0 0 35px rgba(193, 22, 42, 0.45));
+        animation: logoFloat 3s ease-in-out infinite;
+      }
+
+      .mk-path {
+        stroke-width: 9;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-dasharray: 3800;
+        stroke-dashoffset: 3800;
+        fill: transparent;
+        animation: drawLogo 1.8s ease forwards, fillLogo 0.8s ease forwards 1.15s;
+      }
+
+      .white-part { stroke: #ffffff; color: #ffffff; }
+      .red-part   {
+        stroke: #c1162a;
+        color: #c1162a;
+        filter: drop-shadow(0 0 14px rgba(193,22,42,0.8));
+      }
+      .delay-1 { animation-delay: 0.2s,  1.25s; }
+      .delay-2 { animation-delay: 0.35s, 1.4s;  }
+
+      .splash-text {
+        margin-top: 28px;
+        opacity: 0;
+        transform: translateY(18px);
+        animation: textReveal 0.9s ease forwards 1.45s;
+      }
+      .splash-text h1 {
+        color: #ffffff;
+        font-size: clamp(20px, 4vw, 32px);
+        letter-spacing: 0.22em;
+        font-weight: 900;
+        text-transform: uppercase;
+        font-family: Arial, sans-serif;
+      }
+      .splash-text p {
+        margin-top: 10px;
+        color: rgba(255,255,255,0.6);
+        font-size: 12px;
+        letter-spacing: 0.25em;
+        text-transform: uppercase;
+        font-family: Arial, sans-serif;
+      }
+
+      .splash-progress {
+        width: min(300px, 70vw);
+        height: 3px;
+        margin: 30px auto 0;
+        background: rgba(255,255,255,0.12);
+        border-radius: 100px;
+        overflow: hidden;
+        opacity: 0;
+        animation: textReveal 0.8s ease forwards 1.7s;
+      }
+      .splash-progress-bar {
+        width: 0%;
+        height: 100%;
+        background: linear-gradient(90deg, #c1162a, #ffffff, #c1162a);
+        border-radius: inherit;
+        animation: loadingBar 2s ease forwards 1.75s;
+      }
+
+      @keyframes drawLogo    { to { stroke-dashoffset: 0; } }
+      @keyframes fillLogo    { to { fill: currentColor; } }
+      @keyframes loadingBar  { to { width: 100%; } }
+      @keyframes logoFloat   { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+      @keyframes textReveal  { to { opacity:1; transform:translateY(0); } }
+      @keyframes contentEnter {
+        from { opacity:0; transform:scale(0.92) translateY(20px); }
+        to   { opacity:1; transform:scale(1) translateY(0); }
+      }
+      @keyframes pulseGlow {
+        0%,100%{ transform:scale(0.9); opacity:0.5; }
+        50%    { transform:scale(1.15); opacity:1; }
+      }
+
+      /* Keep body invisible until splash fades out (prevents flash) */
+      body { background: #050505; }
+      #root { opacity: 0; transition: opacity 0.4s ease; }
+      #root.visible { opacity: 1; }
+    </style>
+  </head>
+  <body>
+
+    <!-- ── Splash screen (MK loading animation) ── -->
+    <div id="splash">
+      <div class="splash-content">
+        <svg class="mk-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1792 2400">
+          <g>
+            <path class="mk-path white-part"
+              d="M1723.03,1085.9l-285.04,309.7c99.76,119.81,199.51,239.63,299.27,359.44-66.4,1.17-132.81,2.33-199.21,3.5-43.01-43.64-87.38-92.11-131.93-145.71-28.16-33.88-54.26-67.24-78.43-99.78-78.66,82.57-157.31,165.14-235.97,247.72-31.62.49-63.25.98-94.87,1.47v-124.59l523.27-551.75h202.9Z"/>
+            <path class="mk-path red-part"
+              d="M1153.48,1085.9c-2.24,25.05-4.48,50.1-6.72,75.15l-424.77,465.61-437.46-465.62c-2.24-25.05-4.49-50.09-6.73-75.14h153.07l285.76,312.73,290.91-312.73h145.95Z"/>
+            <polygon class="mk-path red-part delay-1"
+              points="441.58 1755.16 277.81 1762.26 277.87 1221.17 439.81 1397.33 441.58 1755.16"/>
+            <path class="mk-path red-part delay-2"
+              d="M996.85,1388.47c53.41-55.77,106.81-111.53,160.22-167.3l-8.97,190.4-151.25,158.45v-181.54Z"/>
+          </g>
+        </svg>
+
+        <div class="splash-text">
+          <h1>PDF Batch Gen</h1>
+          <p>Badge Automation Studio</p>
+        </div>
+
+        <div class="splash-progress">
+          <div class="splash-progress-bar"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── React app root ── -->
+    <div id="root"></div>
+
+    <script>
+      // Dismiss splash once React has mounted (~3.8s covers full animation)
+      window.__splashDone = function() {
+        var splash = document.getElementById('splash');
+        var root   = document.getElementById('root');
+        if (splash) splash.classList.add('hidden');
+        if (root)   root.classList.add('visible');
+      };
+      // Fallback: auto-dismiss after 4.2s even if React is slow
+      setTimeout(window.__splashDone, 4200);
+    </script>
+
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

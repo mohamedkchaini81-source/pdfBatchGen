@@ -1,0 +1,30 @@
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+
+.table th, .table td {
+  padding: 8px 10px;
+  text-align: start;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.table th {
+  font-weight: 600;
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.kbd {
+  display: inline-block;
+  padding: 2px 6px;
+  background: var(--color-surface-3);
+  border: 1px solid var(--color-border-2);
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 11px;
+  white-space: nowrap;
+}

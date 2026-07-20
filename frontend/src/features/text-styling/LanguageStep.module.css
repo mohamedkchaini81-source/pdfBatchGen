@@ -1,0 +1,24 @@
+.wrap { display: flex; flex-direction: column; gap: var(--space-2); }
+.note { font-size: var(--text-xs); color: var(--color-text-muted); }
+
+.options { display: flex; flex-direction: column; gap: var(--space-1); }
+
+.option {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--color-border);
+  cursor: pointer;
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+.option:hover { border-color: var(--color-primary); background: var(--color-primary-light); }
+
+.optionActive {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+.optLabel { font-size: var(--text-sm); font-weight: 600; color: var(--color-text); }
+.optDesc  { font-size: var(--text-xs); color: var(--color-text-muted); }

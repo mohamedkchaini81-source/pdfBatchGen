@@ -1,0 +1,34 @@
+# Node
+node_modules/
+frontend/dist/
+frontend/dist/.git/
+.vite/
+*.local
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+*.egg-info/
+.pytest_cache/
+backend/temp/*
+!backend/temp/.gitkeep
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Test output
+playwright-report/
+test-results/
+coverage/
+htmlcov/
+
+# Env
+.env

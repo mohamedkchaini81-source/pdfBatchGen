@@ -1,0 +1,100 @@
+/* ============================================================
+   DESIGN TOKENS — extracted from Flutter AppColors + AppTheme
+   ============================================================ */
+
+:root {
+  /* ── Brand ─────────────────────────────────────────────── */
+  --color-primary:        #4F46E5;
+  --color-primary-dark:   #3730A3;
+  --color-primary-light:  #EEF2FF;
+  --color-primary-light2: #E0E7FF;
+  --color-primary-btn-border: #C7D2FE;
+
+  /* ── Surfaces ───────────────────────────────────────────── */
+  --color-surface:        #FFFFFF;
+  --color-surface-2:      #F8FAFC;
+  --color-surface-3:      #F1F5F9;
+  --color-canvas:         #E8EDF4;
+
+  /* ── Text ───────────────────────────────────────────────── */
+  --color-text:           #182033;
+  --color-text-muted:     #667085;
+  --color-text-nav:       #464555;
+
+  /* ── Borders ────────────────────────────────────────────── */
+  --color-border:         #D9DFEB;
+  --color-border-2:       #B9C2D1;
+
+  /* ── Semantic ───────────────────────────────────────────── */
+  --color-success:        #067647;
+  --color-success-bg:     #ECFDF3;
+  --color-success-border: #ABEFС6;
+
+  --color-warning:        #B54708;
+  --color-warning-bg:     #FFFAEB;
+  --color-warning-border: #FEDF89;
+
+  --color-danger:         #B42318;
+  --color-danger-bg:      #FEF3F2;
+  --color-danger-border:  #FECDCA;
+
+  /* ── Sidebar ────────────────────────────────────────────── */
+  --color-sidebar-active:      #6860EF;
+  --color-sidebar-active-dark: #4F46E5;
+  --color-sidebar-bg:          #F8F7FF;
+
+  /* ── Rulers ─────────────────────────────────────────────── */
+  --color-ruler-name:     #4F46E5;   /* blue  — same as primary */
+  --color-ruler-role:     #F59E0B;   /* amber — orange accent   */
+
+  /* ── Shadow ─────────────────────────────────────────────── */
+  --shadow-card:   0 2px 8px rgba(15, 23, 42, 0.09);
+  --shadow-dialog: 0 8px 32px rgba(15, 23, 42, 0.14);
+
+  /* ── Radius ──────────────────────────────────────────────── */
+  --radius-xs: 6px;
+  --radius-sm: 9px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+
+  /* ── Spacing ─────────────────────────────────────────────── */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 28px;
+  --space-8: 32px;
+
+  /* ── Layout ──────────────────────────────────────────────── */
+  --sidebar-width:    360px;
+  --topbar-height:    64px;
+  --toolbar-height:   50px;
+  --footer-height:    52px;
+
+  /* ── Typography ──────────────────────────────────────────── */
+  --font-ui:          'Inter', sans-serif;
+  --font-ui-arabic:   'IBM Plex Sans Arabic', sans-serif;
+
+  --text-xs:   9.5px;
+  --text-sm:   11px;
+  --text-base: 13px;
+  --text-md:   15px;
+  --text-lg:   16px;
+  --text-xl:   24px;
+
+  /* ── Transitions ─────────────────────────────────────────── */
+  --transition-fast: 150ms ease;
+  --transition-med:  160ms ease;
+}
+
+/* RTL direction applied to <html dir="rtl"> */
+[dir="rtl"] {
+  --sidebar-side: right;
+}
+[dir="ltr"] {
+  --sidebar-side: left;
+}

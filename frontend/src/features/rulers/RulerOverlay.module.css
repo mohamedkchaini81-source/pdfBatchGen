@@ -1,0 +1,67 @@
+.layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* ── Main box ───────────────────────────────────────────────── */
+.box {
+  position: absolute;
+  border: 2px solid;
+  cursor: move;
+  pointer-events: all;
+  touch-action: none;
+  user-select: none;
+  outline: none;
+}
+
+.box:focus-visible {
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.35);
+}
+
+/* ── Label badge ────────────────────────────────────────────── */
+.badge {
+  position: absolute;
+  top: -18px;
+  left: 0;
+  height: 16px;
+  padding: 0 5px;
+  border-radius: 3px 3px 0 0;
+  font-size: 9px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* ── Edge handles ───────────────────────────────────────────── */
+.handle {
+  position: absolute;
+  pointer-events: all;
+  touch-action: none;
+}
+
+.handle-left   { left: -5px;  top: 50%; transform: translateY(-50%); width: 10px; height: 32px; border-radius: 4px; cursor: ew-resize; }
+.handle-right  { right: -5px; top: 50%; transform: translateY(-50%); width: 10px; height: 32px; border-radius: 4px; cursor: ew-resize; }
+.handle-top    { top: -5px;   left: 50%; transform: translateX(-50%); height: 10px; width: 32px; border-radius: 4px; cursor: ns-resize; }
+.handle-bottom { bottom: -5px;left: 50%; transform: translateX(-50%); height: 10px; width: 32px; border-radius: 4px; cursor: ns-resize; }
+
+/* ── Corner handles ─────────────────────────────────────────── */
+.corner {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  border: 2px solid;
+  background: #fff;
+  pointer-events: all;
+  touch-action: none;
+}
+
+.corner-tl { top: -5px;    left: -5px;   cursor: nwse-resize; }
+.corner-tr { top: -5px;    right: -5px;  cursor: nesw-resize; }
+.corner-bl { bottom: -5px; left: -5px;   cursor: nesw-resize; }
+.corner-br { bottom: -5px; right: -5px;  cursor: nwse-resize; }

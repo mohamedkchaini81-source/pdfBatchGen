@@ -1,0 +1,116 @@
+.wrap {
+  margin-bottom: 0;
+  border-radius: var(--radius-sm);
+  transition: margin var(--transition-med);
+}
+
+.wrapActive {
+  margin: 6px 0;
+  border: 1px solid #C7C4D8;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  background: var(--color-surface);
+}
+
+/* ── Header button ─────────────────────────────────────────── */
+.header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 8px 10px;
+  min-height: 48px;
+  border-radius: var(--radius-sm);
+  text-align: start;
+  transition: background var(--transition-med);
+  cursor: pointer;
+}
+
+.header:hover:not(.headerActive) {
+  background: var(--color-surface-3);
+}
+
+.headerActive {
+  background: var(--color-sidebar-active);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.headerActive:hover {
+  background: var(--color-sidebar-active-dark);
+}
+
+/* ── Icon ───────────────────────────────────────────────────── */
+.iconWrap {
+  width: 24px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Text ───────────────────────────────────────────────────── */
+.textWrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 1px;
+}
+
+.titleTxt {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text);
+  .headerActive & { color: #ffffff; }
+}
+
+.headerActive .titleTxt { color: #ffffff; }
+
+.subtitleTxt {
+  font-size: 9px;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.headerActive .subtitleTxt { color: rgba(255,255,255,0.75); }
+
+/* ── Step dot ───────────────────────────────────────────────── */
+.dot {
+  width: 23px;
+  height: 23px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-xs);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.dotDefault {
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border-2);
+}
+
+.dotActive {
+  background: #ffffff;
+  color: var(--color-primary);
+  border: 1px solid #ffffff;
+}
+
+.dotComplete {
+  background: var(--color-success);
+  color: #ffffff;
+  border: 1px solid var(--color-success);
+}
+
+/* ── Body ───────────────────────────────────────────────────── */
+.body {
+  padding: var(--space-3);
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}

@@ -1,0 +1,19 @@
+.list { display: flex; flex-direction: column; gap: var(--space-2); }
+
+.row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: 10px;
+  border-radius: var(--radius-md);
+  border: 1px solid;
+}
+
+.ok      { background: var(--color-success-bg);  border-color: var(--color-success-border); color: var(--color-success); }
+.warning { background: var(--color-warning-bg);  border-color: var(--color-warning-border); color: var(--color-warning); }
+.error   { background: var(--color-danger-bg);   border-color: var(--color-danger-border);  color: var(--color-danger);  }
+
+.rowIcon { flex-shrink: 0; margin-top: 1px; }
+.rowText { display: flex; flex-direction: column; gap: 2px; }
+.rowTitle { font-size: var(--text-sm); font-weight: 600; }
+.rowSub   { font-size: var(--text-xs); opacity: 0.85; }
