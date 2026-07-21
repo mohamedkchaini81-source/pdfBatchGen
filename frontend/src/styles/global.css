@@ -66,6 +66,8 @@ html {
   height: 100%;
   font-size: 16px;
   -webkit-text-size-adjust: 100%;
+  /* Prevent double-tap zoom on interactive elements on iOS */
+  touch-action: manipulation;
 }
 
 body {
@@ -128,6 +130,8 @@ button {
   cursor: pointer;
   border: none;
   background: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 button:disabled {

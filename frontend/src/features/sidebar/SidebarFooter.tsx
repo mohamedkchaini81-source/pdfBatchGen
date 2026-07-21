@@ -6,8 +6,12 @@ import { ValidationDialog } from '@/features/validation/ValidationDialog'
 import { Button } from '@/components/common/Button'
 import styles from './SidebarFooter.module.css'
 
-export function SidebarFooter() {
-  const { t } = useTranslation()
+interface Props {
+  onAfterGenerate?: () => void
+}
+
+export function SidebarFooter({ onAfterGenerate }: Props) {
+  const { t }      = useTranslation()
   const state      = useAppStore()
   const validation = selectValidation(state)
   const [showDlg, setShowDlg] = useState(false)
@@ -24,7 +28,7 @@ export function SidebarFooter() {
         <Button
           variant="primary"
           size="md"
-          onClick={() => setShowDlg(true)}
+          onClick={() => { setShowDlg(true); onAfterGenerate?.() }}
           aria-label={t('validateAll')}
         >
           {t('generate')}

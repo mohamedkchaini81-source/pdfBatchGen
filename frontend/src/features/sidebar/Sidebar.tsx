@@ -17,11 +17,12 @@ import {
   AlignCenter, Briefcase, Download,
 } from 'lucide-react'
 
-/**
- * 7-step accordion sidebar — mirrors Flutter Sidebar exactly.
- * Steps: PDF | Language | Fonts | CSV | Name | Role | Export
- */
-export function Sidebar() {
+interface Props {
+  isOpen:  boolean
+  onClose: () => void
+}
+
+export function Sidebar({ isOpen, onClose }: Props) {
   const [active, setActive] = useState(0)
   const { t } = useTranslation()
 
@@ -48,7 +49,7 @@ export function Sidebar() {
       icon: Languages,
       titleKey: 'steps.language',
       subtitleKey: 'stepSubtitles.language',
-      complete: true, // always has a valid value
+      complete: true,
       content: <LanguageStep />,
     },
     {
@@ -89,7 +90,11 @@ export function Sidebar() {
   ]
 
   return (
-    <aside className={styles.sidebar} aria-label={t('configuration')}>
+    <aside
+      id="sidebar"
+      className={[styles.sidebar, isOpen ? styles.open : ''].join(' ')}
+      aria-label={t('configuration')}
+    >
       <div className={styles.scrollArea}>
         {steps.map((step, i) => (
           <ConfigStep
@@ -106,7 +111,7 @@ export function Sidebar() {
           </ConfigStep>
         ))}
       </div>
-      <SidebarFooter />
+      <SidebarFooter onAfterGenerate={onClose} />
     </aside>
   )
 }

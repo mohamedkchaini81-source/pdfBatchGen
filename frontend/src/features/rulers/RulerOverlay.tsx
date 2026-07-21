@@ -140,7 +140,7 @@ export function RulerOverlay({ type, containerW, containerH }: Props) {
           <div
             key={h}
             className={[styles.corner, styles[`corner-${h}`]].join(' ')}
-            style={{ background: color, borderColor: color }}
+            style={{ '--corner-color': color } as React.CSSProperties}
             onPointerDown={(e) => onPointerDown(e, h)}
             aria-label={`Resize ${label} ruler ${h} corner`}
           />

@@ -19,11 +19,12 @@
   align-items: center;
   gap: 11px;
   padding: 8px 10px;
-  min-height: 48px;
+  min-height: 52px;        /* ≥44px touch target */
   border-radius: var(--radius-sm);
   text-align: start;
   transition: background var(--transition-med);
   cursor: pointer;
+  touch-action: manipulation;
 }
 
 .header:hover:not(.headerActive) {
@@ -78,8 +79,8 @@
 
 /* ── Step dot ───────────────────────────────────────────────── */
 .dot {
-  width: 23px;
-  height: 23px;
+  width: 26px;
+  height: 26px;
   flex-shrink: 0;
   display: flex;
   align-items: center;

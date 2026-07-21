@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Lock, User } from 'lucide-react'
+import { Lock, User, Menu, X } from 'lucide-react'
 import { useAppStore } from '@/state/appStore'
 import type { Locale } from '@/types'
 import { HelpDialog } from '@/components/common/HelpDialog'
@@ -8,15 +8,12 @@ import { ShortcutsDialog } from '@/components/common/ShortcutsDialog'
 import { PrivacyDialog } from '@/components/common/PrivacyDialog'
 import styles from './TopBar.module.css'
 
-/**
- * Mirrors Flutter TopBar exactly:
- * - Brand name (primary color, 24px semibold)
- * - Help / Shortcuts nav text buttons
- * - EN / AR language switcher
- * - Privacy lock icon
- * - User avatar icon
- */
-export function TopBar() {
+interface Props {
+  onMenuClick: () => void
+  menuOpen:    boolean
+}
+
+export function TopBar({ onMenuClick, menuOpen }: Props) {
   const { t } = useTranslation()
   const locale    = useAppStore((s) => s.locale)
   const setLocale = useAppStore((s) => s.setLocale)
@@ -28,8 +25,19 @@ export function TopBar() {
   return (
     <>
       <header className={styles.bar} role="banner">
+        {/* Hamburger — tablet/mobile only */}
+        <button
+          className={[styles.menuBtn, menuOpen ? styles.menuBtnActive : ''].join(' ')}
+          onClick={onMenuClick}
+          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+          aria-expanded={menuOpen}
+          aria-controls="sidebar"
+        >
+          {menuOpen ? <X size={22} aria-hidden /> : <Menu size={22} aria-hidden />}
+        </button>
+
         {/* Brand */}
-        <span className={styles.brand} aria-label={t('appTitle')}>
+        <span className={styles.brand} aria-label="PDF Batch Gen">
           PDF Batch Gen
         </span>
 
@@ -73,7 +81,7 @@ export function TopBar() {
 
         {/* Avatar */}
         <div className={styles.avatar} aria-hidden>
-          <User size={18} />
+          <User size={16} />
         </div>
       </header>
 

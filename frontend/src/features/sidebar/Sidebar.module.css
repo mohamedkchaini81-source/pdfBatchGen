@@ -11,10 +11,12 @@
 .scrollArea {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: var(--space-2);
+  -webkit-overflow-scrolling: touch;
 }
 
-/* ── Responsive ─────────────────────────────────────────────── */
+/* ── Tablet: drawer overlay ───────────────────────────────── */
 @media (max-width: 1023px) {
   .sidebar {
     position: absolute;
@@ -22,8 +24,10 @@
     inset-inline-start: 0;
     z-index: 200;
     transform: translateX(-100%);
-    transition: transform var(--transition-med);
+    transition: transform 200ms ease;
     box-shadow: var(--shadow-dialog);
+    max-height: 100%;
+    overflow-y: auto;
   }
 
   [dir="rtl"] .sidebar {
@@ -35,10 +39,15 @@
   .sidebar.open {
     transform: translateX(0);
   }
+
+  [dir="rtl"] .sidebar.open {
+    transform: translateX(0);
+  }
 }
 
-@media (max-width: 767px) {
+/* ── Mobile: full width drawer ────────────────────────────── */
+@media (max-width: 640px) {
   .sidebar {
-    width: 100%;
+    width: min(var(--sidebar-width), 100vw);
   }
 }

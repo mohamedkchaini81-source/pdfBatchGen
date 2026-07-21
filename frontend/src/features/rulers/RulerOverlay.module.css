@@ -35,33 +35,121 @@
   text-transform: uppercase;
   white-space: nowrap;
   pointer-events: none;
+  user-select: none;
 }
 
-/* ── Edge handles ───────────────────────────────────────────── */
+/* ── Edge handles — 44px touch target, visually 10px ───────── */
 .handle {
   position: absolute;
   pointer-events: all;
   touch-action: none;
+  /* Expand hit area with padding while keeping visual size */
 }
 
-.handle-left   { left: -5px;  top: 50%; transform: translateY(-50%); width: 10px; height: 32px; border-radius: 4px; cursor: ew-resize; }
-.handle-right  { right: -5px; top: 50%; transform: translateY(-50%); width: 10px; height: 32px; border-radius: 4px; cursor: ew-resize; }
-.handle-top    { top: -5px;   left: 50%; transform: translateX(-50%); height: 10px; width: 32px; border-radius: 4px; cursor: ns-resize; }
-.handle-bottom { bottom: -5px;left: 50%; transform: translateX(-50%); height: 10px; width: 32px; border-radius: 4px; cursor: ns-resize; }
+.handle-left {
+  left: -22px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  cursor: ew-resize;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.handle-left::after {
+  content: '';
+  width: 10px;
+  height: 32px;
+  border-radius: 4px;
+  background: inherit;
+  display: block;
+}
 
-/* ── Corner handles ─────────────────────────────────────────── */
+.handle-right {
+  right: -22px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  cursor: ew-resize;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.handle-right::after {
+  content: '';
+  width: 10px;
+  height: 32px;
+  border-radius: 4px;
+  background: inherit;
+  display: block;
+}
+
+.handle-top {
+  top: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 44px;
+  width: 44px;
+  cursor: ns-resize;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.handle-top::after {
+  content: '';
+  height: 10px;
+  width: 32px;
+  border-radius: 4px;
+  background: inherit;
+  display: block;
+}
+
+.handle-bottom {
+  bottom: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 44px;
+  width: 44px;
+  cursor: ns-resize;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.handle-bottom::after {
+  content: '';
+  height: 10px;
+  width: 32px;
+  border-radius: 4px;
+  background: inherit;
+  display: block;
+}
+
+/* ── Corner handles — 44px touch target ────────────────────── */
 .corner {
   position: absolute;
-  width: 10px;
-  height: 10px;
+  width: 44px;
+  height: 44px;
+  border-radius: 2px;
+  pointer-events: all;
+  touch-action: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.corner::after {
+  content: '';
+  width: 12px;
+  height: 12px;
   border-radius: 2px;
   border: 2px solid;
   background: #fff;
-  pointer-events: all;
-  touch-action: none;
+  border-color: inherit;
+  display: block;
 }
 
-.corner-tl { top: -5px;    left: -5px;   cursor: nwse-resize; }
-.corner-tr { top: -5px;    right: -5px;  cursor: nesw-resize; }
-.corner-bl { bottom: -5px; left: -5px;   cursor: nesw-resize; }
-.corner-br { bottom: -5px; right: -5px;  cursor: nwse-resize; }
+.corner-tl { top: -22px;    left: -22px;   cursor: nwse-resize; }
+.corner-tr { top: -22px;    right: -22px;  cursor: nesw-resize; }
+.corner-bl { bottom: -22px; left: -22px;   cursor: nesw-resize; }
+.corner-br { bottom: -22px; right: -22px;  cursor: nwse-resize; }
