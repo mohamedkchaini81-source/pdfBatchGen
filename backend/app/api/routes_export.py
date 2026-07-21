@@ -1,12 +1,14 @@
 """
-Export API routes.
+Export API routes — registered under /api prefix by main.py.
 
-POST   /exports                 → start export job
-GET    /exports/{job_id}        → poll status
-DELETE /exports/{job_id}        → cancel
-GET    /exports/{job_id}/download → download result
+Effective routes:
+  POST   /api/exports
+  GET    /api/exports/{job_id}
+  DELETE /api/exports/{job_id}
+  GET    /api/exports/{job_id}/download
 """
 import json
+import logging
 from pathlib import Path
 from typing import Optional
 
@@ -21,14 +23,17 @@ from app.services.export_job_service import (
 )
 
 router = APIRouter(tags=["exports"])
+logger = logging.getLogger(__name__)
 
 
-# ── Helper: save uploaded font to job temp dir ───────────────────────────────
+# ── Helper: save uploaded font ────────────────────────────────────────────────
 
-async def _save_font(upload: Optional[UploadFile], job_dir: Path, name: str) -> Optional[Path]:
+async def _save_font(
+    upload: Optional[UploadFile], job_dir: Path, name: str
+) -> Optional[Path]:
     if not upload or not upload.filename:
         return None
-    ext  = Path(upload.filename).suffix.lower()
+    ext = Path(upload.filename).suffix.lower()
     if ext not in (".ttf", ".otf"):
         return None
     dest = job_dir / f"{name}{ext}"
@@ -36,21 +41,21 @@ async def _save_font(upload: Optional[UploadFile], job_dir: Path, name: str) -> 
     return dest
 
 
-# ── POST /exports ─────────────────────────────────────────────────────────────
+# ── POST /api/exports ─────────────────────────────────────────────────────────
 
 @router.post("/exports", status_code=202)
 async def start_export(
-    template:     UploadFile = File(...),
-    records_json: str        = Form(...),
-    name_config:  str        = Form(...),
-    role_config:  str        = Form(...),
-    settings_json: str       = Form(..., alias="settings"),
-    name_ar_font: Optional[UploadFile] = File(None),
-    name_en_font: Optional[UploadFile] = File(None),
-    role_ar_font: Optional[UploadFile] = File(None),
-    role_en_font: Optional[UploadFile] = File(None),
+    template:      UploadFile          = File(...),
+    records_json:  str                 = Form(...),
+    name_config:   str                 = Form(...),
+    role_config:   str                 = Form(...),
+    settings_json: str                 = Form(..., alias="settings"),
+    name_ar_font:  Optional[UploadFile] = File(None),
+    name_en_font:  Optional[UploadFile] = File(None),
+    role_ar_font:  Optional[UploadFile] = File(None),
+    role_en_font:  Optional[UploadFile] = File(None),
 ) -> dict:
-    # Validate PDF size
+    # Validate PDF
     template_bytes = await template.read()
     if len(template_bytes) > settings.max_pdf_size:
         raise HTTPException(400, "PDF template exceeds maximum allowed size (50 MB).")
@@ -59,10 +64,10 @@ async def start_export(
 
     # Parse JSON payloads
     try:
-        raw_records   = json.loads(records_json)
-        participants  = [Participant(**r) for r in raw_records]
-        name_cfg      = TextFieldConfig(**json.loads(name_config))
-        role_cfg      = TextFieldConfig(**json.loads(role_config))
+        raw_records     = json.loads(records_json)
+        participants    = [Participant(**r) for r in raw_records]
+        name_cfg        = TextFieldConfig(**json.loads(name_config))
+        role_cfg        = TextFieldConfig(**json.loads(role_config))
         export_settings = ExportSettings(**json.loads(settings_json))
     except Exception as e:
         raise HTTPException(400, f"Invalid request payload: {e}")
@@ -72,10 +77,11 @@ async def start_export(
     if len(participants) > settings.max_records:
         raise HTTPException(400, f"Too many records (max {settings.max_records}).")
 
-    # Create job and temp dir
+    # Create job
     job     = create_job()
     job_dir = settings.temp_dir / job.job_id
     job_dir.mkdir(parents=True, exist_ok=True)
+    logger.info("Export job created: %s (%d records)", job.job_id, len(participants))
 
     # Save fonts
     name_ar_path = await _save_font(name_ar_font, job_dir, "name_ar")
@@ -100,42 +106,48 @@ async def start_export(
     return {"jobId": job.job_id, "status": "queued"}
 
 
-# ── GET /exports/{job_id} ─────────────────────────────────────────────────────
+# ── GET /api/exports/{job_id} ─────────────────────────────────────────────────
 
 @router.get("/exports/{job_id}")
 async def poll_export(job_id: str) -> dict:
+    logger.info("Status lookup: %s", job_id)
     job = get_job(job_id)
     if not job:
-        raise HTTPException(404, "Export job not found.")
-    return job.to_dict()
+        logger.warning("Job not found: %s", job_id)
+        raise HTTPException(status_code=404, detail="Export job not found.")
+    result = job.to_dict()
+    logger.info("Job %s status: %s (%d/%d)", job_id, result["status"],
+                result["completedRecords"], result["totalRecords"])
+    return result
 
 
-# ── DELETE /exports/{job_id} ──────────────────────────────────────────────────
+# ── DELETE /api/exports/{job_id} ──────────────────────────────────────────────
 
 @router.delete("/exports/{job_id}", status_code=202)
 async def cancel_export_route(job_id: str) -> dict:
     job = get_job(job_id)
     if not job:
-        raise HTTPException(404, "Export job not found.")
+        raise HTTPException(status_code=404, detail="Export job not found.")
     cancelled = cancel_job(job_id)
+    logger.info("Job %s cancel requested: %s", job_id, cancelled)
     return {"jobId": job_id, "cancelled": cancelled}
 
 
-# ── GET /exports/{job_id}/download ───────────────────────────────────────────
+# ── GET /api/exports/{job_id}/download ───────────────────────────────────────
 
 @router.get("/exports/{job_id}/download")
 async def download_export(job_id: str) -> FileResponse:
     job = get_job(job_id)
     if not job:
-        raise HTTPException(404, "Export job not found.")
+        raise HTTPException(status_code=404, detail="Export job not found.")
     if job.status.value != "completed":
         raise HTTPException(400, f"Export is not complete (status: {job.status.value}).")
     if not job.output_path or not job.output_path.exists():
         raise HTTPException(410, "Download has expired or was already cleaned up.")
 
-    # Determine media type
     suffix = job.output_path.suffix.lower()
     media  = "application/zip" if suffix == ".zip" else "application/pdf"
+    logger.info("Download: %s → %s", job_id, job.output_filename)
 
     return FileResponse(
         path=str(job.output_path),
