@@ -11,9 +11,7 @@ services:
     healthCheckPath: /health
     envVars:
       - key: ALLOWED_ORIGINS
-        # Set this in Render dashboard after the frontend URL is known.
-        # Example: http://localhost:5173,https://pdf-batch-gen-frontend.onrender.com
-        sync: false
+        value: http://localhost:5173,https://pdf-batch-gen-frontend.onrender.com
       - key: DEBUG
         value: "false"
       - key: TEMP_DIR
@@ -25,7 +23,6 @@ services:
   - type: web
     name: pdf-batch-gen-frontend
     runtime: static
-    plan: free
     rootDir: frontend
     buildCommand: npm ci && npm run build
     staticPublishPath: ./dist
@@ -34,12 +31,9 @@ services:
         name: Cache-Control
         value: no-cache
     routes:
-      # Send all non-asset requests to index.html (React Router fallback)
       - type: rewrite
         source: /*
         destination: /index.html
     envVars:
       - key: VITE_API_URL
-        # Set this to your Render backend URL after the backend is deployed.
-        # Example: https://pdf-batch-gen-backend.onrender.com
-        sync: false
+        value: https://pdf-batch-gen-backend.onrender.com
