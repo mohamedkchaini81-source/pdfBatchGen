@@ -1,18 +1,14 @@
+import { API_BASE } from '@/config/api'
+
 /**
  * Check if the FastAPI backend is reachable.
- * Returns true if the health endpoint responds, false otherwise.
+ * Uses the centralized API_BASE so the URL is never hardcoded here.
  */
 export async function checkBackendHealth(): Promise<boolean> {
   try {
-    const isProd     = import.meta.env.PROD
-    const PROD_BACKEND = 'https://pdf-batch-gen-backend.onrender.com'
-    const url = isProd
-      ? `${import.meta.env.VITE_API_URL ?? PROD_BACKEND}/api/health`
-      : '/api/health'
-
     const controller = new AbortController()
     const timeout    = setTimeout(() => controller.abort(), 5000)
-    const res = await fetch(url, { signal: controller.signal })
+    const res = await fetch(`${API_BASE}/health`, { signal: controller.signal })
     clearTimeout(timeout)
     return res.ok
   } catch {

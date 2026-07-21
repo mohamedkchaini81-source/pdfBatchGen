@@ -3,11 +3,8 @@ import react from '@vitejs/plugin-react'
 import path from 'path'
 
 export default defineConfig({
-  // For GitHub Pages: set base to your repo name
-  // e.g. if your repo is github.com/username/pdf-batch-gen-web
-  // set base: '/pdf-batch-gen-web/'
-  // For a custom domain or root deployment, use base: '/'
-  base: '/pdfBatchGen/',
+  // Render Static Site serves from root — base must be '/'
+  base: '/',
 
   plugins: [react()],
   resolve: {
@@ -16,6 +13,7 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
+      // Dev only: proxy /api to local FastAPI backend
       '/api': { target: 'http://localhost:8000', changeOrigin: true },
     },
   },

@@ -6,7 +6,6 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.routes_health import router as health_router
 from app.api.routes_export import router as export_router
 from app.core.config import settings
 
@@ -16,7 +15,7 @@ async def lifespan(app: FastAPI):
     # Startup: ensure temp directory exists
     settings.temp_dir.mkdir(parents=True, exist_ok=True)
     yield
-    # Shutdown: cleanup is handled per-job
+    # Shutdown: cleanup handled per-job
 
 
 def create_app() -> FastAPI:
@@ -37,7 +36,19 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
-    app.include_router(health_router, prefix="/api")
+    # ── Health checks ─────────────────────────────────────────────────────────
+    # GET /health       → used by Render health-check (healthCheckPath: /health)
+    # GET /api/health   → used by frontend BackendBanner component
+
+    @app.get("/health", tags=["health"])
+    async def health_root():
+        return {"status": "ok", "service": "pdf-batch-gen"}
+
+    @app.get("/api/health", tags=["health"])
+    async def health_api():
+        return {"status": "ok", "service": "pdf-batch-gen"}
+
+    # ── API routes ────────────────────────────────────────────────────────────
     app.include_router(export_router, prefix="/api")
 
     return app

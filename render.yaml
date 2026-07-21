@@ -1,15 +1,45 @@
 services:
+
+  # ── Backend — Python Web Service ───────────────────────────────────────────
   - type: web
     name: pdf-batch-gen-backend
     runtime: python
+    plan: free
     rootDir: backend
     buildCommand: pip install -r requirements.txt
-    startCommand: python -m uvicorn app.main:app --host 0.0.0.0 --port $PORT
-    plan: free
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
     envVars:
-      - key: PYTHON_VERSION
-        value: "3.11.0"
+      - key: ALLOWED_ORIGINS
+        # Set this in Render dashboard after the frontend URL is known.
+        # Example: http://localhost:5173,https://pdf-batch-gen-frontend.onrender.com
+        sync: false
       - key: DEBUG
         value: "false"
-      - key: CORS_ORIGINS
-        value: '["https://mohamedkchaini81-source.github.io","http://localhost:5173"]'
+      - key: TEMP_DIR
+        value: /tmp/pdf_batch_gen
+      - key: JOB_EXPIRY_SECONDS
+        value: "3600"
+
+  # ── Frontend — Static Site ─────────────────────────────────────────────────
+  - type: web
+    name: pdf-batch-gen-frontend
+    runtime: static
+    plan: free
+    rootDir: frontend
+    buildCommand: npm ci && npm run build
+    staticPublishPath: ./dist
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: no-cache
+    routes:
+      # Send all non-asset requests to index.html (React Router fallback)
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
+        # Set this to your Render backend URL after the backend is deployed.
+        # Example: https://pdf-batch-gen-backend.onrender.com
+        sync: false

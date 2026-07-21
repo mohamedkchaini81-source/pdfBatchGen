@@ -1,18 +1,4 @@
-/**
- * API client — automatically points to:
- *   - Local backend (localhost:8000) during development (Vite proxy handles /api)
- *   - Render.com backend in production
- *
- * Set VITE_API_URL in your environment or .env file to override.
- * Example: VITE_API_URL=https://pdf-batch-gen-backend.onrender.com
- */
-const PROD_BACKEND = 'https://pdf-batch-gen-backend.onrender.com'
-
-// In dev: Vite proxies /api → localhost:8000, so BASE stays '/api'
-// In prod: prepend the full Render URL
-const BASE = import.meta.env.PROD
-  ? `${import.meta.env.VITE_API_URL ?? PROD_BACKEND}/api`
-  : '/api'
+import { API_BASE } from '@/config/api'
 
 export class ApiError extends Error {
   constructor(public status: number, message: string) {
@@ -35,7 +21,7 @@ async function request<T>(
     init.body    = JSON.stringify(body)
   }
 
-  const res = await fetch(`${BASE}${path}`, init)
+  const res = await fetch(`${API_BASE}${path}`, init)
 
   if (!res.ok) {
     let msg = res.statusText

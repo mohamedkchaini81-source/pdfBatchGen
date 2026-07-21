@@ -1,34 +1,42 @@
-# Node
-node_modules/
+# ── Environment files ─────────────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+frontend/.env
+backend/.env
+
+# ── Frontend ───────────────────────────────────────────────────────────────────
+frontend/node_modules/
 frontend/dist/
-frontend/dist/.git/
-.vite/
+frontend/.vite/
 *.local
 
-# Python
+# ── Python ────────────────────────────────────────────────────────────────────
 __pycache__/
+**/__pycache__/
 *.py[cod]
+*.pyo
 .venv/
 venv/
 env/
 *.egg-info/
 .pytest_cache/
+backend/.pytest_cache/
+
+# ── Generated / temp files ────────────────────────────────────────────────────
 backend/temp/*
 !backend/temp/.gitkeep
 
-# OS
+# ── OS ────────────────────────────────────────────────────────────────────────
 .DS_Store
 Thumbs.db
 
-# IDE
+# ── IDE ───────────────────────────────────────────────────────────────────────
 .vscode/
 .idea/
 
-# Test output
+# ── Test output ───────────────────────────────────────────────────────────────
 playwright-report/
 test-results/
 coverage/
 htmlcov/
-
-# Env
-.env
